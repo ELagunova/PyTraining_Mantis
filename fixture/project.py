@@ -28,14 +28,17 @@ class ProjectHelper:
 
     def create(self, project):
         wd = self.app.wd
+        self.open_manage_project_page()
         wd.find_element_by_xpath("//input[@value='Create New Project']").click()
         self.fill_form(project)
         wd.find_element_by_xpath("//input[@value='Add Project']").click()
+        self.open_manage_project_page()
 
     def delete(self, project):
         wd = self.app.wd
         self.open_manage_project_page()
         wd.find_element_by_xpath("//a[text()='%s']" %project.name).click()
+        wd.find_element_by_xpath("//input[@value='Delete Project']").click()
         wd.find_element_by_xpath("//input[@value='Delete Project']").click()
 
     def open_manage_project_page(self):

@@ -13,13 +13,15 @@ def random_string(prefix='', maxlen=1, postfix=''):
 @pytest.mark.parametrize('status, view_status',
                          [('release', 'public'), ('development', 'private'),
                           ('stable', 'private'), ('obsolete', 'public')])
-def test_add_project(app, status, view_status):
+def test_add_project(app, config, status, view_status):
     project = Project(name=random_string('test', 5), status=status, view_status=view_status,
                       description=random_string(maxlen=5))
-    old_projects = app.project.get_project_list()
+    username = config["webadmin"]["username"]
+    password = config["webadmin"]["password"]
+    old_projects = app.soap.get_all_projects(username, password)
     app.project.create(project)
-    new_projects = app.project.get_project_list()
+    new_projects = app.soap.get_all_projects(username, password)
     old_projects.append(project)
-    assert old_projects == new_projects
+    assert sorted(old_projects, key=Project.id_or_max) == sorted(new_projects, key=Project.id_or_max)
 
 
